@@ -2,6 +2,7 @@ import { PRODUCTS } from "@/data/products";
 import ProductGrid from "@/components/catalog/ProductGrid";
 import { CatalogProvider } from "@/context/CatalogContext";
 import FilterBar from "@/components/catalog/FilterBar";
+import SortControls from "@/components/catalog/SortControls";
 
 export const metadata = {
   title: "Shop — CodeRoad Catalog",
@@ -15,7 +16,10 @@ export default function ProductsPage() {
         Catalog
       </h1>
       <CatalogProvider>
-        <FilterBar />
+        <section aria-label="Filter and sort controls" className="flex flex-wrap gap-4 mb-8">
+          <FilterBar />
+          <SortControls />
+        </section>
         <div className="mt-8">
           <ProductGrid products={PRODUCTS} />
         </div>
