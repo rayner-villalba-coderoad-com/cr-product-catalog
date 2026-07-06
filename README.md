@@ -69,6 +69,8 @@ src/
 
 **State**: Filter/sort state lives in `CatalogContext` (shared across `FilterBar`, `SortControls`, `ProductGrid`). Size and colour selections on the detail page are local `useState` — not in context.
 
+> **Note**: Filter and sort state is held in React Context and is not persisted to the URL. Active filters reset on page refresh. URL-based filter persistence is a planned future enhancement.
+
 **Client boundary**: Pages are React Server Components by default. `"use client"` is added only to components that use hooks or event handlers: `FilterBar`, `SortControls`, `ProductGrid`, `ImageGallery`, `SizeSelector`, `ColorSwatches`, and the detail page.
 
 **Adding products**: Edit `src/data/products.ts`. Each product must satisfy the `Product` interface — at minimum one image, one size, one colour, a positive price, and a unique `id` that becomes the URL segment (`/products/{id}`).
