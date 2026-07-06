@@ -14,9 +14,7 @@ export default function SortControls() {
 
   return (
     <fieldset>
-      <legend className="mb-2 text-sm font-semibold text-gray-700">
-        Sort by price
-      </legend>
+      <legend className="sr-only">Sort by price</legend>
       <div className="flex flex-wrap gap-2">
         {SORT_OPTIONS.map(({ label, value }) => {
           const isActive = filters.sortOrder === value;
@@ -32,6 +30,7 @@ export default function SortControls() {
               <input
                 type="radio"
                 name="sort-order"
+                value={value ?? 'default'}
                 className="sr-only"
                 checked={isActive}
                 onChange={() => setSortOrder(value)}
