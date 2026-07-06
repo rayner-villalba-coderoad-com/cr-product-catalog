@@ -3,6 +3,9 @@
 import { useCatalog } from "@/context/CatalogContext";
 import type { Category } from "@/types/product";
 
+/**
+ * Available filter options. `value: null` represents the "All" / no-filter state.
+ */
 const CATEGORIES: { label: string; value: Category | null }[] = [
   { label: "All", value: null },
   { label: "Tops", value: "Tops" },
@@ -10,17 +13,24 @@ const CATEGORIES: { label: string; value: Category | null }[] = [
   { label: "Outerwear", value: "Outerwear" },
 ];
 
+/**
+ * FilterBar — category filter control.
+ *
+ * Reads and writes `filters.categories` from `CatalogContext`.
+ * Must be rendered inside `<CatalogProvider>`.
+ */
 export default function FilterBar() {
-  const { filters, setCategory } = useCatalog();
+  const { filters, toggleCategory } = useCatalog();
 
   return (
     <fieldset>
-      <legend className="mb-2 text-sm font-semibold text-gray-700">
-        Category
-      </legend>
+      <legend className="sr-only">Filter by category</legend>
       <div className="flex flex-wrap gap-2">
         {CATEGORIES.map(({ label, value }) => {
-          const isActive = filters.category === value;
+          const isActive =
+            value === null
+              ? filters.categories.length === 0
+              : filters.categories.includes(value);
           return (
             <label
               key={label}
@@ -31,11 +41,11 @@ export default function FilterBar() {
               }`}
             >
               <input
-                type="radio"
+                type="checkbox"
                 name="category-filter"
                 className="sr-only"
                 checked={isActive}
-                onChange={() => setCategory(value)}
+                onChange={() => toggleCategory(value)}
               />
               {label}
             </label>
