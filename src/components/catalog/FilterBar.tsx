@@ -1,7 +1,9 @@
 "use client";
 
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCatalog } from "@/context/CatalogContext";
 import type { Category } from "@/types/product";
+import { filterButtonClass } from "./filterButtonClass";
 
 const CATEGORIES: { label: string; value: Category | null }[] = [
   { label: "All", value: null },
@@ -11,37 +13,78 @@ const CATEGORIES: { label: string; value: Category | null }[] = [
 ];
 
 export default function FilterBar() {
-  const { filters, setCategory } = useCatalog();
+  const { filters, toggleCategory, setCategory, setSortOrder } = useCatalog();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handleChange = (value: Category | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value === null) {
+      params.delete("category");
+    } else {
+      // Toggle the category in the URL params list
+      const existing = params.getAll("category");
+      if (existing.includes(value)) {
+        const updated = existing.filter((c) => c !== value);
+        params.delete("category");
+        updated.forEach((c) => params.append("category", c));
+      } else {
+        params.append("category", value);
+      }
+    }
+
+    router.push(`${pathname}?${params.toString()}`);
+    toggleCategory(value);
+  };
+
+  const hasActiveFilters =
+    filters.categories.length > 0 || filters.sortOrder !== null;
 
   return (
-    <fieldset>
-      <legend className="mb-2 text-sm font-semibold text-gray-700">
-        Category
-      </legend>
-      <div className="flex flex-wrap gap-2">
-        {CATEGORIES.map(({ label, value }) => {
-          const isActive = filters.category === value;
-          return (
-            <label
-              key={label}
-              className={`cursor-pointer rounded border px-4 py-2 text-sm font-medium transition-colors focus-within:outline-none focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-1 ${
-                isActive
-                  ? "border-gray-900 bg-gray-900 text-white"
-                  : "border-gray-300 bg-white text-gray-700 hover:border-gray-900 hover:text-gray-900"
-              }`}
-            >
-              <input
-                type="radio"
-                name="category-filter"
-                className="sr-only"
-                checked={isActive}
-                onChange={() => setCategory(value)}
-              />
-              {label}
-            </label>
-          );
-        })}
-      </div>
-    </fieldset>
+    <>
+      <fieldset>
+        <legend className="sr-only">Filter by category</legend>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map(({ label, value }) => {
+            const isActive =
+              value === null
+                ? filters.categories.length === 0
+                : filters.categories.includes(value);
+            return (
+              <label key={label} className={filterButtonClass(isActive)}>
+                <input
+                  type="checkbox"
+                  name="category-filter"
+                  value={value ?? "all"}
+                  className="sr-only"
+                  checked={isActive}
+                  onChange={() => handleChange(value)}
+                />
+                {label}
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      {hasActiveFilters && (
+        <button
+          type="button"
+          onClick={() => {
+            setCategory(null);
+            setSortOrder(null);
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete("category");
+            params.delete("sortOrder");
+            router.push(`${pathname}?${params.toString()}`);
+          }}
+          className="text-sm underline text-gray-600 hover:text-gray-900"
+        >
+          Clear all filters
+        </button>
+      )}
+    </>
   );
 }
