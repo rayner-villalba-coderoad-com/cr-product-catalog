@@ -9,14 +9,24 @@ const SORT_OPTIONS: { label: string; value: SortOrder | null }[] = [
   { label: "Price: High to Low", value: "price-desc" },
 ];
 
+/**
+ * SortControls — price sort control for the product catalog.
+ *
+ * Reads and writes the `sortOrder` filter via `useCatalog()`. Must be rendered
+ * inside a `<CatalogProvider>` — throws if the context is missing.
+ * Selecting "Default" (value `null`) restores the original product order.
+ *
+ * @example
+ * <CatalogProvider>
+ *   <SortControls />
+ * </CatalogProvider>
+ */
 export default function SortControls() {
   const { filters, setSortOrder } = useCatalog();
 
   return (
     <fieldset>
-      <legend className="mb-2 text-sm font-semibold text-gray-700">
-        Sort by price
-      </legend>
+      <legend className="sr-only">Sort by price</legend>
       <div className="flex flex-wrap gap-2">
         {SORT_OPTIONS.map(({ label, value }) => {
           const isActive = filters.sortOrder === value;
