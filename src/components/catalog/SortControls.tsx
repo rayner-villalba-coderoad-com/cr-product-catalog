@@ -1,6 +1,5 @@
 "use client";
 
-import { useCatalog } from "@/context/CatalogContext";
 import type { SortOrder } from "@/types/product";
 
 const SORT_OPTIONS: { label: string; value: SortOrder | null }[] = [
@@ -9,9 +8,19 @@ const SORT_OPTIONS: { label: string; value: SortOrder | null }[] = [
   { label: "Price: High to Low", value: "price-desc" },
 ];
 
-export default function SortControls() {
-  const { filters, setSortOrder } = useCatalog();
+interface SortControlsProps {
+  activeSortOrder: SortOrder | null;
+  onSortChange: (sortOrder: SortOrder | null) => void;
+}
 
+/**
+ * SortControls — price sort UI for the product catalog.
+ *
+ * Accepts the active sort order and a change handler as props, allowing the
+ * parent to control sort state. Renders a `<fieldset>` with radio options for
+ * Default, Low to High, and High to Low price ordering.
+ */
+export default function SortControls({ activeSortOrder, onSortChange }: SortControlsProps) {
   return (
     <fieldset>
       <legend className="mb-2 text-sm font-semibold text-gray-700">
@@ -19,7 +28,7 @@ export default function SortControls() {
       </legend>
       <div className="flex flex-wrap gap-2">
         {SORT_OPTIONS.map(({ label, value }) => {
-          const isActive = filters.sortOrder === value;
+          const isActive = activeSortOrder === value;
           return (
             <label
               key={label}
@@ -34,7 +43,7 @@ export default function SortControls() {
                 name="sort-order"
                 className="sr-only"
                 checked={isActive}
-                onChange={() => setSortOrder(value)}
+                onChange={() => onSortChange(value)}
               />
               {label}
             </label>
