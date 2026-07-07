@@ -1,5 +1,7 @@
 import { PRODUCTS } from "@/data/products";
 import ProductGrid from "@/components/catalog/ProductGrid";
+import { CatalogProvider } from "@/context/CatalogContext";
+import FilterBar from "@/components/catalog/FilterBar";
 
 export const metadata = {
   title: "Shop — CodeRoad Catalog",
@@ -12,7 +14,12 @@ export default function ProductsPage() {
       <h1 className="mb-8 text-3xl font-bold tracking-tight text-gray-900">
         Catalog
       </h1>
-      <ProductGrid products={PRODUCTS} />
+      <CatalogProvider>
+        <FilterBar />
+        <div className="mt-8">
+          <ProductGrid products={PRODUCTS} />
+        </div>
+      </CatalogProvider>
     </div>
   );
 }
