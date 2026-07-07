@@ -9,6 +9,15 @@ const SORT_OPTIONS: { label: string; value: SortOrder | null }[] = [
   { label: "Price: High to Low", value: "price-desc" },
 ];
 
+/**
+ * SortControls — Client Component.
+ *
+ * Renders a fieldset of radio buttons for sorting visible products by price
+ * ("Default", "Price: Low to High", "Price: High to Low").
+ *
+ * Reads `filters.sortOrder` and calls `setSortOrder` from CatalogContext.
+ * Must be rendered inside <CatalogProvider>.
+ */
 export default function SortControls() {
   const { filters, setSortOrder } = useCatalog();
 
