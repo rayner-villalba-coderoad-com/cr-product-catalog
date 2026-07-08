@@ -2,6 +2,7 @@ import { PRODUCTS } from "@/data/products";
 import ProductGrid from "@/components/catalog/ProductGrid";
 import { CatalogProvider } from "@/context/CatalogContext";
 import FilterBar from "@/components/catalog/FilterBar";
+import SortControls from "@/components/catalog/SortControls";
 
 export const metadata = {
   title: "Shop — CodeRoad Catalog",
@@ -14,8 +15,13 @@ export default function ProductsPage() {
       <h1 className="mb-8 text-3xl font-bold tracking-tight text-gray-900">
         Catalog
       </h1>
+      {/* CatalogProvider supplies shared filter/sort state to FilterBar and ProductGrid.
+          Both components must remain descendants of this provider (FR-003, FR-004). */}
       <CatalogProvider>
-        <FilterBar />
+        <div className="flex flex-wrap gap-6 mb-4">
+          <FilterBar />
+          <SortControls />
+        </div>
         <div className="mt-8">
           <ProductGrid products={PRODUCTS} />
         </div>
